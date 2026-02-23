@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beatrice Trang — Photography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,200;0,9..40,300;0,9..40,400;1,9..40,200;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ───────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black:  #0c0c0a;
+  --deep:   #111110;
+  --mid:    #1c1c1a;
+  --border: rgba(255,255,255,0.09);
+  --white:  #f2ede6;
+  --muted:  rgba(242,237,230,0.42);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: none; }
+
+/* ─── CURSOR ──────────────────────────── */
+#cur-dot, #cur-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  top: 0; left: 0;
+}
+#cur-dot {
+  width: 7px; height: 7px;
+  background: var(--white);
+  mix-blend-mode: difference;
+  transition: width .2s, height .2s;
+}
+#cur-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(242,237,230,.4);
+  transition: width .3s, height .3s, border-color .2s;
+}
+body.hov #cur-dot  { width: 11px; height: 11px; }
+body.hov #cur-ring { width: 54px; height: 54px; border-color: rgba(242,237,230,.7); }
+
+/* ─── NAV ─────────────────────────────── */
+nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 500;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-size: .7rem;
+  font-weight: 300;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+.nav-logo em { font-style: normal; opacity: .45; font-weight: 200; }
+.burger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  background: none;
+  border: none;
+}
+.burger span {
+  display: block;
+  width: 26px; height: 1px;
+  background: var(--white);
+  transition: transform .4s ease, opacity .3s;
+}
+.burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ─── FULLSCREEN MENU ─────────────────── */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: var(--deep);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 56px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease;
+}
+.menu.open { opacity: 1; pointer-events: all; }
+.menu ul { list-style: none; }
+.menu ul li { border-bottom: 1px solid var(--border); overflow: hidden; }
+.menu ul a {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 24px 0;
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
+  font-weight: 200;
+  letter-spacing: -.01em;
+  transform: translateY(110%);
+  transition: transform .5s cubic-bezier(.16,1,.3,1), opacity .3s;
+  opacity: .9;
+}
+.menu.open ul a { transform: translateY(0); }
+.menu ul li:nth-child(1) a { transition-delay: .04s; }
+.menu ul li:nth-child(2) a { transition-delay: .08s; }
+.menu ul li:nth-child(3) a { transition-delay: .12s; }
+.menu ul li:nth-child(4) a { transition-delay: .16s; }
+.menu ul li:nth-child(5) a { transition-delay: .20s; }
+.menu ul li:nth-child(6) a { transition-delay: .24s; }
+.menu ul a:hover { opacity: .4; }
+.menu-num { font-size: .58rem; letter-spacing: .15em; color: var(--muted); }
+.menu-foot {
+  margin-top: 44px;
+  font-size: .62rem;
+  font-weight: 200;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── HERO ────────────────────────────── */
+.hero {
+  padding-top: 62px;
+  height: 100svh;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.h-cell {
+  overflow: hidden;
+  position: relative;
+  background: var(--mid);
+}
+.h-cell img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+  will-change: transform;
+}
+.h-cell:hover img { transform: scale(1.04); }
+.h-cell.big { grid-column: 1; grid-row: span 2; }
+.h-cell.sm  { grid-column: 2; }
+
+/* hero title */
+.hero-title {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 32px 40px;
+  background: linear-gradient(to top, rgba(12,12,10,.9) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-name {
+  font-size: clamp(2.6rem, 6.5vw, 6.5rem);
+  font-weight: 200;
+  letter-spacing: -.015em;
+  line-height: .93;
+}
+.hero-name .ol {
+  -webkit-text-stroke: 1px rgba(242,237,230,.5);
+  color: transparent;
+}
+.hero-sub {
+  margin-top: 12px;
+  font-size: .62rem;
+  font-weight: 300;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── WORK SECTIONS ───────────────────── */
+.work-section {
+  padding: 88px 40px;
+  border-top: 1px solid var(--border);
+}
+.ws-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+}
+.ws-label {
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.ws-title {
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  font-weight: 200;
+  letter-spacing: -.01em;
+  line-height: 1;
+}
+.ws-title .ol {
+  -webkit-text-stroke: 1px rgba(242,237,230,.4);
+  color: transparent;
+}
+.view-all-btn {
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 9px 20px;
+  background: none;
+  transition: color .25s, border-color .25s;
+  flex-shrink: 0;
+}
+.view-all-btn:hover { color: var(--white); border-color: rgba(242,237,230,.35); }
+
+/* ─── PREVIEW STRIP ───────────────────── */
+/* Only the first image loads eagerly; rest are lazy */
+.preview-strip {
+  display: grid;
+  gap: 4px;
+  height: 360px;
+}
+.preview-strip.cols-3 { grid-template-columns: 2fr 1.2fr 1.2fr; }
+.preview-strip.cols-2 { grid-template-columns: 1fr 1fr; }
+.preview-strip.cols-4 { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
+
+.p-cell {
+  overflow: hidden;
+  position: relative;
+  background: var(--mid);
+  cursor: none;
+}
+.p-cell img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .6s cubic-bezier(.25,.46,.45,.94), filter .5s;
+  filter: saturate(.9);
+}
+.p-cell:hover img { transform: scale(1.05); filter: saturate(1.05); }
+.p-cell-ov {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+  background: rgba(12,12,10,0);
+  transition: background .3s;
+}
+.p-cell:hover .p-cell-ov { background: rgba(12,12,10,.4); }
+.p-cell-label {
+  font-size: .55rem;
+  font-weight: 300;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity .3s, transform .3s;
+}
+.p-cell:hover .p-cell-label { opacity: 1; transform: translateY(0); }
+
+/* ─── LIGHTBOX ────────────────────────── */
+.lb {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  background: rgba(6,6,5,.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+  backdrop-filter: blur(8px);
+}
+.lb.open { opacity: 1; pointer-events: all; }
+
+.lb-img-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 92vw;
+  max-height: 88vh;
+}
+.lb-img {
+  max-width: 88vw;
+  max-height: 84vh;
+  object-fit: contain;
+  transform: scale(.96);
+  transition: transform .4s cubic-bezier(.34,1.3,.64,1);
+  display: block;
+}
+.lb.open .lb-img { transform: scale(1); }
+
+/* skeleton while loading */
+.lb-img.loading {
+  opacity: 0;
+  transition: opacity .3s;
+}
+.lb-img.loaded { opacity: 1; }
+
+.lb-spinner {
+  position: absolute;
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  display: none;
+}
+.lb-img-wrap.loading-state .lb-spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.lb-close {
+  position: fixed;
+  top: 24px; right: 36px;
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 9px 18px;
+  transition: color .2s, border-color .2s;
+}
+.lb-close:hover { color: var(--white); border-color: rgba(242,237,230,.4); }
+
+.lb-prev, .lb-next {
+  position: fixed;
+  top: 50%; transform: translateY(-50%);
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  transition: color .2s, border-color .2s;
+}
+.lb-prev:hover, .lb-next:hover { color: var(--white); border-color: rgba(242,237,230,.4); }
+.lb-prev { left: 28px; }
+.lb-next { right: 28px; }
+
+.lb-counter {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .2em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.lb-title-bar {
+  position: fixed;
+  bottom: 48px; left: 50%;
+  transform: translateX(-50%);
+  font-size: .6rem;
+  font-weight: 300;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(242,237,230,.35);
+  white-space: nowrap;
+}
+
+/* thumbnail strip at bottom of lightbox */
+.lb-thumbs {
+  position: fixed;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  max-width: 80vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lb-thumbs::-webkit-scrollbar { display: none; }
+.lb-thumb {
+  width: 44px; height: 32px;
+  flex-shrink: 0;
+  overflow: hidden;
+  opacity: .35;
+  transition: opacity .2s;
+  cursor: none;
+  border: 1px solid transparent;
+}
+.lb-thumb.active { opacity: 1; border-color: var(--white); }
+.lb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ─── ABOUT ───────────────────────────── */
+.about {
+  padding: 88px 40px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+.about-img {
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: var(--mid);
+}
+.about-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(.85);
+  transition: filter .6s, transform .8s;
+}
+.about-img:hover img { filter: saturate(1); transform: scale(1.03); }
+.about-lbl {
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.about-h {
+  font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+  font-weight: 200;
+  letter-spacing: -.01em;
+  line-height: 1.05;
+  margin-bottom: 28px;
+}
+.about-h .ol {
+  -webkit-text-stroke: 1px rgba(242,237,230,.4);
+  color: transparent;
+}
+.about-p {
+  font-size: .86rem;
+  font-weight: 200;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 32px;
+}
+.pill {
+  font-size: .56rem;
+  font-weight: 300;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  color: var(--muted);
+  transition: border-color .2s, color .2s;
+}
+.pill:hover { border-color: rgba(242,237,230,.3); color: var(--white); }
+
+/* ─── CONTACT ─────────────────────────── */
+.contact {
+  padding: 88px 40px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: end;
+}
+.contact-big {
+  font-size: clamp(2.8rem, 7vw, 7rem);
+  font-weight: 200;
+  letter-spacing: -.02em;
+  line-height: .92;
+}
+.contact-big .ol {
+  -webkit-text-stroke: 1px rgba(242,237,230,.35);
+  color: transparent;
+}
+.c-lbl {
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.c-email {
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 200;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  display: inline-block;
+  transition: border-color .25s;
+}
+.c-email:hover { border-color: rgba(242,237,230,.5); }
+.c-note {
+  margin-top: 24px;
+  font-size: .78rem;
+  font-weight: 200;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.c-soc {
+  display: flex;
+  gap: 20px;
+  margin-top: 36px;
+}
+.c-soc a {
+  font-size: .58rem;
+  font-weight: 300;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .2s;
+}
+.c-soc a:hover { color: var(--white); }
+
+/* ─── FOOTER ──────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 26px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+footer p {
+  font-size: .58rem;
+  font-weight: 200;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── SCROLL REVEAL ───────────────────── */
+/* Keep content-visibility visible so browser intersects lazy images correctly */
+.rv {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s ease, transform .8s ease;
+  will-change: opacity, transform;
+}
+.rv.in { opacity: 1; transform: none; }
+.rv.d1 { transition-delay: .1s; }
+.rv.d2 { transition-delay: .2s; }
+
+/* ─── MOBILE ──────────────────────────── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .hero {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 55vh 28vh;
+  }
+  .h-cell.big { grid-column: span 2; grid-row: 1; }
+  .h-cell.sm  { grid-column: 1; grid-row: 2; }
+  .h-cell.sm2 { grid-column: 2; grid-row: 2; }
+  .hero-title { padding: 20px; }
+  .hero-name { font-size: 2.2rem; }
+
+  .work-section { padding: 56px 20px; }
+  .ws-head { flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+  .preview-strip {
+    grid-template-columns: 1fr 1fr !important;
+    height: auto !important;
+  }
+  .p-cell { height: 180px; }
+  .preview-strip.cols-4 .p-cell:nth-child(n+3) { display: none; }
+
+  .about { grid-template-columns: 1fr; gap: 36px; padding: 56px 20px; }
+  .contact { grid-template-columns: 1fr; gap: 36px; padding: 56px 20px; }
+  footer { flex-direction: column; gap: 10px; padding: 24px 20px; text-align: center; }
+
+  .lb-prev { left: 10px; padding: 10px 12px; }
+  .lb-next { right: 10px; padding: 10px 12px; }
+  .lb-close { right: 14px; top: 14px; }
+  .lb-thumbs { display: none; }
+  .menu { padding: 0 28px; }
+  .menu ul a { font-size: 2rem; padding: 18px 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- ═══ NAV ════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo">Beatrice Trang <em>/ Photography</em></a>
+  <button class="burger" id="burger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══ FULLSCREEN MENU ════════════════ -->
+<div class="menu" id="menu">
+  <ul>
+    <li><a href="#wedding"  onclick="closeMenu()"><span class="menu-num">01</span>Wedding</a></li>
+    <li><a href="#action"   onclick="closeMenu()"><span class="menu-num">02</span>Action</a></li>
+    <li><a href="#lifestyle" onclick="closeMenu()"><span class="menu-num">03</span>Lifestyle</a></li>
+    <li><a href="#concert"  onclick="closeMenu()"><span class="menu-num">04</span>Concert</a></li>
+    <li><a href="#boudoir"  onclick="closeMenu()"><span class="menu-num">05</span>Boudoir</a></li>
+    <li><a href="#contact"  onclick="closeMenu()"><span class="menu-num">06</span>Contact</a></li>
+  </ul>
+  <p class="menu-foot">Toronto, Canada &nbsp;·&nbsp; @beabmx</p>
+</div>
+
+<!-- ═══ HERO ════════════════════════════ -->
+<!-- Only 4 images load here, sized to 1024w max -->
+<section class="hero">
+  <div class="h-cell big">
+    <img src="https://beatricetrang.com/wp-content/uploads/2025/10/bea03876.jpg?w=1024" alt="Beatrice Trang photography" loading="eager" fetchpriority="high">
+  </div>
+  <div class="h-cell sm">
+    <img src="https://beatricetrang.com/wp-content/uploads/2025/09/bea05047-1.jpg?w=683" alt="" loading="eager">
+  </div>
+  <div class="h-cell sm sm2">
+    <img src="https://beatricetrang.com/wp-content/uploads/2025/10/benson-boone-c2a9beatrice-trang-4.jpg?w=683" alt="" loading="eager">
+  </div>
+  <div class="hero-title">
+    <h1 class="hero-name">
+      <div>Beatrice</div>
+      <div class="ol">Trang</div>
+    </h1>
+    <p class="hero-sub">Toronto &nbsp;·&nbsp; Portrait &nbsp;·&nbsp; Music &nbsp;·&nbsp; Editorial &nbsp;·&nbsp; Sports</p>
+  </div>
+</section>
+
+<!-- ═══ WEDDING ════════════════════════ -->
+<section class="work-section rv" id="wedding">
+  <div class="ws-head">
+    <div>
+      <p class="ws-label">01 — Wedding</p>
+      <h2 class="ws-title">The Day &amp; <span class="ol">Everything Around It</span></h2>
+    </div>
+    <button class="view-all-btn" onclick="openLB('wedding',0)">View all 17 →</button>
+  </div>
+  <div class="preview-strip cols-3">
+    <div class="p-cell" onclick="openLB('wedding',0)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/bea03475.jpg?w=683" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label">View series</span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('wedding',1)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/bea06112.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('wedding',2)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/bea06439.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ACTION ══════════════════════════ -->
+<section class="work-section rv" id="action">
+  <div class="ws-head">
+    <div>
+      <p class="ws-label">02 — Action &amp; Sports</p>
+      <h2 class="ws-title"><span class="ol">Motion</span> &amp; Energy</h2>
+    </div>
+    <button class="view-all-btn" onclick="openLB('action',0)">View all 20 →</button>
+  </div>
+  <div class="preview-strip cols-3">
+    <div class="p-cell" onclick="openLB('action',0)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/09/bea03953.jpg?w=683" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label">View series</span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('action',2)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/09/bea04148.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('action',6)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/09/bea04811.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIFESTYLE ═══════════════════════ -->
+<section class="work-section rv" id="lifestyle">
+  <div class="ws-head">
+    <div>
+      <p class="ws-label">03 — Lifestyle</p>
+      <h2 class="ws-title">Quiet <span class="ol">Frames</span></h2>
+    </div>
+    <button class="view-all-btn" onclick="openLB('lifestyle',0)">View all 14 →</button>
+  </div>
+  <div class="preview-strip cols-3">
+    <div class="p-cell" onclick="openLB('lifestyle',0)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2026/02/bea04408-2.jpg?w=683" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label">View series</span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('lifestyle',1)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2026/02/bea04491.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('lifestyle',4)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2026/02/bea04547.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONCERT ══════════════════════════ -->
+<section class="work-section rv" id="concert">
+  <div class="ws-head">
+    <div>
+      <p class="ws-label">04 — Concert &amp; Live Music</p>
+      <h2 class="ws-title">On <span class="ol">Stage</span></h2>
+    </div>
+    <button class="view-all-btn" onclick="openLB('concert',0)">View all 11 →</button>
+  </div>
+  <div class="preview-strip cols-4">
+    <div class="p-cell" onclick="openLB('concert',1)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/dua-lipa-c2a9beatrice-trang-3.jpg?w=683" alt="Dua Lipa" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label">View series</span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('concert',5)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/benson-boone-c2a9beatrice-trang-4.jpg?w=500" alt="Benson Boone" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('concert',7)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/tate-mcrae-c2a9beatrice-trang-3.jpg?w=500" alt="Tate McRae" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('concert',4)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/dua-lipa-c2a9beatrice-trang-7.jpg?w=500" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOUDOIR ══════════════════════════ -->
+<section class="work-section rv" id="boudoir">
+  <div class="ws-head">
+    <div>
+      <p class="ws-label">05 — Boudoir</p>
+      <h2 class="ws-title">Intimate <span class="ol">Portraiture</span></h2>
+    </div>
+    <button class="view-all-btn" onclick="openLB('boudoir',0)">View all 5 →</button>
+  </div>
+  <div class="preview-strip cols-2">
+    <div class="p-cell" onclick="openLB('boudoir',0)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/bea04445.jpg?w=683" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label">View series</span></div>
+    </div>
+    <div class="p-cell" onclick="openLB('boudoir',2)">
+      <img src="https://beatricetrang.com/wp-content/uploads/2025/10/bea02179.jpg?w=683" alt="" loading="eager">
+      <div class="p-cell-ov"><span class="p-cell-label"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ════════════════════════════ -->
+<div class="about rv">
+  <div class="about-img">
+    <img src="https://beabmx.wordpress.com/wp-content/uploads/2026/02/r0010207.jpg" alt="Beatrice Trang" loading="eager">
+  </div>
+  <div>
+    <p class="about-lbl">About Beatrice</p>
+    <h2 class="about-h">She raced BMX.<br>Now she <span class="ol">shoots</span> it.</h2>
+    <p class="about-p">Beatrice Trang is a Toronto-based photographer whose background as a competitive BMX racer — she represented Canada at the 2017 UCI World Championships — gives her an instinct most photographers don't have. She's been in the action. She knows where to stand.</p>
+    <p class="about-p">Her range spans concert photography (Dua Lipa, Benson Boone, Tate McRae), action sports, lifestyle, boudoir, and weddings. What threads it together: a clean eye, real presence, and a genuine feel for the people she photographs.</p>
+    <div class="pills">
+      <span class="pill">BMX &amp; Action Sports</span>
+      <span class="pill">Live Music</span>
+      <span class="pill">Wedding</span>
+      <span class="pill">Boudoir</span>
+      <span class="pill">Lifestyle</span>
+      <span class="pill">Toronto</span>
+      <span class="pill">The Bloom BMX</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONTACT ══════════════════════════ -->
+<div class="contact rv" id="contact">
+  <div>
+    <p class="ws-label">Get in touch</p>
+    <h2 class="contact-big">
+      <div>Let's</div>
+      <div>make</div>
+      <div class="ol">something.</div>
+    </h2>
+  </div>
+  <div>
+    <p class="c-lbl">Available for bookings</p>
+    <a href="/cdn-cgi/l/email-protection#b4dcd1d8d8dbf4d6d1d5c0c6ddd7d1c0c6d5dad39ad7dbd9" class="c-email"><span class="__cf_email__" data-cfemail="fa929f969695ba989f9b8e8893999f8e889b949dd4999597">[email&#160;protected]</span></a>
+    <p class="c-note">"I'll probably show up in a hoodie.<br>The photos won't disappoint."</p>
+    <div class="c-soc">
+      <a href="https://instagram.com/beabmx" target="_blank">Instagram</a>
+      <a href="https://beatricetrang.com" target="_blank">Website</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ════════════════════════════ -->
+<footer>
+  <p>© 2025 Beatrice Trang Photography</p>
+  <p>Toronto, Canada</p>
+  <p>@beabmx</p>
+</footer>
+
+<!-- ═══ LIGHTBOX ════════════════════════ -->
+<div class="lb" id="lb">
+  <button class="lb-close" onclick="closeLB()">Close ✕</button>
+  <div class="lb-img-wrap" id="lbWrap">
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <div class="lb-spinner"></div>
+  </div>
+  <button class="lb-prev" onclick="shiftLB(-1)">← Prev</button>
+  <button class="lb-next" onclick="shiftLB(1)">Next →</button>
+  <div class="lb-title-bar" id="lbTitle"></div>
+  <div class="lb-counter" id="lbCounter"></div>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ─── CURSOR ──────────────────────────── */
+const dot = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx+'px'; dot.style.top = my+'px';
+});
+(function animRing() {
+  rx += (mx-rx)*.12; ry += (my-ry)*.12;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,.p-cell,.pill').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
+});
+
+/* ─── BURGER MENU ─────────────────────── */
+const burger = document.getElementById('burger');
+const menu   = document.getElementById('menu');
+function closeMenu() {
+  burger.classList.remove('open');
+  menu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+burger.addEventListener('click', () => {
+  const o = menu.classList.toggle('open');
+  burger.classList.toggle('open', o);
+  document.body.style.overflow = o ? 'hidden' : '';
+});
+
+/* ─── GALLERY DATA ────────────────────── */
+/* Full-res URLs only loaded when lightbox opens (lazy) */
+const G = {
+  wedding: {
+    label: 'Wedding',
+    imgs: [
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea06771.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea06112.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea06439.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea06526.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea06455.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea06893.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea07164.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03099.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03216.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03475.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03483.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03676.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03111.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03523.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03575.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03628.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03642.jpg'
+    ]
+  },
+  action: {
+    label: 'Action & Sports',
+    imgs: [
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea03953.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea03699.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04148.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea03750.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04103.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04015.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04811.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea05481.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04727.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04693.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea04952.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/09/bea05459.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea05053.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea05043.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea05000.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/doublecashy.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea04293-1.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea03295-1.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea03612-1.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2024/07/bea03939-1.jpg'
+    ]
+  },
+  lifestyle: {
+    label: 'Lifestyle',
+    imgs: [
+      'https://beatricetrang.com/wp-content/uploads/2026/02/bea04408-2.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2026/02/bea04491.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2026/02/bea04400-2.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2026/02/bea04386.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2026/02/bea04547.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2026/02/bea04887.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03952.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03981.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea04076.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea03876.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea04057.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea04111.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea04049.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea04140.jpg'
+    ]
+  },
+  concert: {
+    label: 'Concert & Live Music',
+    imgs: [
+      'https://beatricetrang.com/wp-content/uploads/2025/10/cil-c2a9beatrice-trang-2.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/dua-lipa-c2a9beatrice-trang-3.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/elliot-c2a9beatrice-trang-1.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/zara-c2a9beatrice-trang-5.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/dua-lipa-c2a9beatrice-trang-7.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/benson-boone-c2a9beatrice-trang-4.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/benson-boone-c2a9beatrice-trang-2.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/tate-mcrae-c2a9beatrice-trang-3.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/elliot-c2a9beatrice-trang-2.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/tate-mcrae-c2a9beatrice-trang-2.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/benson-boone-c2a9beatrice-trang-3.jpg'
+    ]
+  },
+  boudoir: {
+    label: 'Boudoir',
+    imgs: [
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea04445.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea02158.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea02179.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea02877.jpg',
+      'https://beatricetrang.com/wp-content/uploads/2025/10/bea02138.jpg'
+    ]
+  }
+};
+
+/* ─── LIGHTBOX — LAZY LOADED ──────────── */
+let curGroup = [], curIdx = 0, curLabel = '';
+const lbEl      = document.getElementById('lb');
+const lbImg     = document.getElementById('lbImg');
+const lbWrap    = document.getElementById('lbWrap');
+const lbCounter = document.getElementById('lbCounter');
+const lbTitle   = document.getElementById('lbTitle');
+const lbThumbs  = document.getElementById('lbThumbs');
+
+/* Pre-loaded thumb cache — only built once per group */
+const thumbCache = {};
+
+function openLB(group, idx) {
+  const g = G[group];
+  curGroup = g.imgs;
+  curLabel = g.label;
+  curIdx   = idx;
+  buildThumbs(group);
+  showLBImg(true);
+  lbEl.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLB() {
+  lbEl.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function shiftLB(d) {
+  curIdx = (curIdx + d + curGroup.length) % curGroup.length;
+  showLBImg(false);
+}
+
+function showLBImg(first) {
+  /* show spinner */
+  lbWrap.classList.add('loading-state');
+  lbImg.classList.add('loading');
+  lbImg.classList.remove('loaded');
+
+  /* set src — browser will lazy-fetch it now */
+  const src = curGroup[curIdx];
+  lbImg.onload = () => {
+    lbWrap.classList.remove('loading-state');
+    lbImg.classList.remove('loading');
+    lbImg.classList.add('loaded');
+  };
+  lbImg.onerror = () => lbWrap.classList.remove('loading-state');
+  lbImg.src = src;
+
+  /* counter + title */
+  lbCounter.textContent =
+    String(curIdx+1).padStart(2,'0') + ' / ' + String(curGroup.length).padStart(2,'0');
+  lbTitle.textContent = curLabel;
+
+  /* sync thumb highlight */
+  document.querySelectorAll('.lb-thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === curIdx);
+  });
+
+  /* preload adjacent images */
+  preloadAdjacent();
+}
+
+function preloadAdjacent() {
+  [-1, 1].forEach(d => {
+    const i = (curIdx + d + curGroup.length) % curGroup.length;
+    const img = new Image();
+    img.src = curGroup[i];
+  });
+}
+
+function buildThumbs(group) {
+  if (thumbCache[group]) {
+    lbThumbs.innerHTML = thumbCache[group];
+    lbThumbs.querySelectorAll('.lb-thumb').forEach((t, i) => {
+      t.onclick = () => { curIdx = i; showLBImg(false); };
+    });
+    return;
+  }
+  lbThumbs.innerHTML = '';
+  G[group].imgs.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'lb-thumb';
+    div.onclick = () => { curIdx = i; showLBImg(false); };
+    /* thumbs use small size param — tiny payloads */
+    const img = document.createElement('img');
+    img.src = src + (src.includes('?') ? '&w=80' : '?w=80');
+    img.loading = 'lazy';
+    div.appendChild(img);
+    lbThumbs.appendChild(div);
+  });
+  thumbCache[group] = lbThumbs.innerHTML;
+}
+
+/* close on backdrop click */
+lbEl.addEventListener('click', e => { if (e.target === lbEl) closeLB(); });
+
+/* keyboard nav */
+document.addEventListener('keydown', e => {
+  if (!lbEl.classList.contains('open')) return;
+  if (e.key === 'Escape')      closeLB();
+  if (e.key === 'ArrowRight')  shiftLB(1);
+  if (e.key === 'ArrowLeft')   shiftLB(-1);
+});
+
+/* ─── SCROLL REVEAL ───────────────────── */
+/* Use threshold:0 so elements trigger as soon as ANY part enters viewport */
+const rvObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0 });
+document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+</script>
+</body>
+</html>
