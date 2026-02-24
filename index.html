@@ -23,6 +23,8 @@
   --dark-2: #181820;
   --gold:   #b8975a;
   --gold-2: #9a7d48;
+  /* Container */
+  --pad-h:  64px;
 }
 
 html { scroll-behavior: smooth; }
@@ -30,10 +32,22 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
   overflow-x: hidden;
   cursor: none;
 }
 body.loading { overflow: hidden; }
+
+/* ── 1440px CONTAINER ───────────────────── */
+/* Wraps all section content but not marquee/full-bleed elements */
+.wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: var(--pad-h);
+  padding-right: var(--pad-h);
+  width: 100%;
+}
 
 /* ── LOADER ─────────────────────────────── */
 #loader {
@@ -114,17 +128,21 @@ body.loading { overflow: hidden; }
 /* ── NAV ──────────────────────────────────── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 300;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 26px 52px;
   transition: background 0.5s, border-color 0.5s, padding 0.4s;
   border-bottom: 1px solid transparent;
+}
+.nav-inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 26px var(--pad-h);
+  display: flex; justify-content: space-between; align-items: center;
+  transition: padding 0.4s;
 }
 nav.scrolled {
   background: rgba(249,249,251,0.96);
   backdrop-filter: blur(20px);
   border-color: var(--rule);
-  padding-top: 16px; padding-bottom: 16px;
 }
+nav.scrolled .nav-inner { padding-top: 16px; padding-bottom: 16px; }
 nav.menu-open { background: transparent; border-color: transparent; }
 
 .nav-logo {
@@ -143,12 +161,10 @@ nav.menu-open { background: transparent; border-color: transparent; }
 .menu-open .nav-logo .sep { background: rgba(255,255,255,0.15); }
 .menu-open .nav-logo .full { color: rgba(255,255,255,0.35); }
 
-/* Hamburger button */
 .nav-burger {
   position: relative; z-index: 301;
   width: 36px; height: 36px;
-  background: none; border: none;
-  cursor: none;
+  background: none; border: none; cursor: none;
   display: flex; flex-direction: column;
   justify-content: center; align-items: flex-end; gap: 5px;
 }
@@ -165,28 +181,19 @@ nav.menu-open { background: transparent; border-color: transparent; }
 .menu-open .burger-line:nth-child(2) { opacity: 0; }
 .menu-open .burger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); width: 24px; }
 
-/* Full-screen menu overlay */
 .nav-overlay {
   position: fixed; inset: 0; z-index: 299;
   background: var(--dark);
   clip-path: inset(0 0 100% 0);
   transition: clip-path 0.9s cubic-bezier(0.77,0,0.18,1);
-  display: flex; flex-direction: column;
-  justify-content: center;
-  padding: 120px 52px 52px;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px var(--pad-h) 52px;
   pointer-events: none;
 }
-.nav-overlay.open {
-  clip-path: inset(0 0 0 0);
-  pointer-events: all;
-}
-.overlay-links {
-  list-style: none;
-  display: flex; flex-direction: column; gap: 0;
-}
+.nav-overlay.open { clip-path: inset(0 0 0 0); pointer-events: all; }
+.overlay-links { list-style: none; }
 .overlay-links li {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.06); overflow: hidden;
 }
 .overlay-links li:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
 .overlay-links a {
@@ -204,9 +211,7 @@ nav.menu-open { background: transparent; border-color: transparent; }
   color: rgba(255,255,255,0.22); font-weight: 400; align-self: flex-end; padding-bottom: 8px;
 }
 .overlay-links a:hover { color: var(--gold); }
-.nav-overlay.open .overlay-links a {
-  transform: translateY(0); opacity: 1;
-}
+.nav-overlay.open .overlay-links a { transform: translateY(0); opacity: 1; }
 .overlay-links li:nth-child(1) a { transition-delay: 0.15s; }
 .overlay-links li:nth-child(2) a { transition-delay: 0.22s; }
 .overlay-links li:nth-child(3) a { transition-delay: 0.29s; }
@@ -215,37 +220,20 @@ nav.menu-open { background: transparent; border-color: transparent; }
 .overlay-bottom {
   margin-top: 48px;
   display: flex; justify-content: space-between; align-items: flex-end;
-  opacity: 0;
-  transition: opacity 0.5s 0.55s;
+  opacity: 0; transition: opacity 0.5s 0.55s;
 }
 .nav-overlay.open .overlay-bottom { opacity: 1; }
-.overlay-email {
-  font-size: 13px; font-weight: 300;
-  color: rgba(255,255,255,0.28); letter-spacing: 0.06em;
-}
-.overlay-loc {
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
-}
+.overlay-email { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.28); letter-spacing: 0.06em; }
+.overlay-loc { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.18); }
 
 /* ── PAGE OPEN ANIMATION ─────────────────── */
-/* Hero content is hidden until loader exits */
-.hero-top-bar,
-.hero-main,
-.hero-panel,
-.hero-foot {
-  opacity: 0;
-}
-body.page-ready .hero-top-bar { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards 0.1s; }
-body.page-ready .hero-main    { animation: fadeUp 1s   cubic-bezier(0.16,1,0.3,1) forwards 0.25s; }
-body.page-ready .hero-panel   { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards 0.4s; }
-body.page-ready .hero-foot    { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards 0.55s; }
+.hero-top-bar, .hero-body-wrap, .hero-foot { opacity: 0; }
+body.page-ready .hero-top-bar  { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards 0.1s; }
+body.page-ready .hero-body-wrap { animation: fadeUp 1s  cubic-bezier(0.16,1,0.3,1) forwards 0.25s; }
+body.page-ready .hero-foot     { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards 0.5s; }
 
-/* Headline lines still slide up from inside clip */
 .hero-headline .line { display: block; overflow: hidden; }
-.hero-headline .line span {
-  display: block; transform: translateY(108%);
-}
+.hero-headline .line span { display: block; transform: translateY(108%); }
 body.page-ready .hero-headline .line:nth-child(1) span { animation: slideUp 1.1s cubic-bezier(0.16,1,0.3,1) forwards 0.3s; }
 body.page-ready .hero-headline .line:nth-child(2) span { animation: slideUp 1.1s cubic-bezier(0.16,1,0.3,1) forwards 0.42s; }
 body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s cubic-bezier(0.16,1,0.3,1) forwards 0.54s; }
@@ -253,14 +241,11 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
 /* ── HERO ─────────────────────────────────── */
 .hero {
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  grid-template-rows: auto 1fr auto;
-  padding: 0 52px;
+  display: flex; flex-direction: column;
   position: relative;
 }
+/* Top eyebrow bar — full width inside container */
 .hero-top-bar {
-  grid-column: 1 / -1;
   padding-top: 130px; padding-bottom: 36px;
   border-bottom: 1px solid var(--rule);
   display: flex; justify-content: space-between; align-items: flex-end;
@@ -273,15 +258,22 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
   font-size: 10px; letter-spacing: 0.16em;
   text-transform: uppercase; color: var(--ink-4);
 }
+
+/* Main body area: headline left, panel right */
+.hero-body-wrap {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  flex: 1;
+  min-height: 0;
+}
 .hero-main {
-  grid-column: 1;
   display: flex; align-items: flex-end;
-  padding: 44px 64px 60px 0;
+  padding: 56px 80px 72px 0;
   border-right: 1px solid var(--rule);
 }
 .hero-headline {
   font-weight: 200;
-  font-size: clamp(56px,8.5vw,124px);
+  font-size: clamp(60px, 8.5vw, 124px);
   line-height: 0.97; letter-spacing: -0.025em;
   color: var(--ink);
 }
@@ -290,53 +282,62 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
   font-style: italic; font-weight: 400; color: var(--gold);
 }
 .hero-panel {
-  grid-column: 2;
-  padding: 44px 0 60px 48px;
+  padding: 56px 0 72px 56px;
   display: flex; flex-direction: column; justify-content: space-between;
 }
 .hero-panel-label {
   font-size: 9px; letter-spacing: 0.26em;
-  text-transform: uppercase; color: var(--ink-4); margin-bottom: 14px;
+  text-transform: uppercase; color: var(--ink-4); margin-bottom: 16px;
 }
 .hero-panel-text {
-  font-size: 14px; line-height: 1.78; font-weight: 300; color: var(--ink-3); margin-bottom: 40px;
+  font-size: 16px; line-height: 1.75; font-weight: 300; color: var(--ink-3); margin-bottom: 48px;
 }
-.hero-panel-divider { width: 100%; height: 1px; background: var(--rule); margin-bottom: 32px; }
-.hero-proof { display: flex; flex-direction: column; gap: 18px; }
+.hero-panel-divider { width: 100%; height: 1px; background: var(--rule); margin-bottom: 36px; }
+
+/* Proof stats: number left, label right, side by side */
+.hero-proof {
+  display: flex; flex-direction: column; gap: 24px;
+}
+.hero-proof-item {
+  display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center;
+}
 .hero-proof-num {
-  font-weight: 200; font-size: 32px;
+  font-weight: 200; font-size: 40px;
   letter-spacing: -0.03em; color: var(--ink); line-height: 1;
+  white-space: nowrap;
 }
 .hero-proof-num b { color: var(--gold); font-weight: 200; }
 .hero-proof-label {
-  font-size: 10px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--ink-4); line-height: 1.4;
+  font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-4); line-height: 1.55;
 }
+
+/* Footer row — spans full width, location spreads end to end */
 .hero-foot {
-  grid-column: 1 / -1;
   border-top: 1px solid var(--rule);
-  padding: 18px 0;
+  padding: 20px 0;
   display: flex; justify-content: space-between; align-items: center;
+  width: 100%;
 }
 .hero-scroll {
   display: flex; align-items: center; gap: 14px;
   font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-4);
   transition: opacity 0.5s, transform 0.5s;
+  flex-shrink: 0;
 }
 .hero-scroll.hidden { opacity: 0; transform: translateY(6px); pointer-events: none; }
 .hero-scroll-line { display: block; width: 32px; height: 1px; background: var(--ink-4); }
+/* Location stretched across full remaining width, text at far right */
 .hero-location {
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-4);
+  font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-4);
+  flex: 1; text-align: right;
 }
 
-/* ── MARQUEE ──────────────────────────────── */
-.marquee-wrap {
-  overflow: hidden; padding: 15px 0; background: var(--dark);
-}
+/* ── MARQUEE — full bleed, no container ─── */
+.marquee-wrap { overflow: hidden; padding: 16px 0; background: var(--dark); }
 .marquee-track {
   display: flex; width: max-content;
   animation: marquee 44s linear infinite;
-  transition: animation-duration 1.2s;
 }
 .marquee-track.slow { animation-duration: 120s; }
 .marquee-item {
@@ -348,80 +349,70 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
 .marquee-sep { color: var(--gold); font-size: 5px; align-self: center; opacity: 0.6; }
 
 /* ── SECTION COMMONS ─────────────────────── */
-.s { padding: 120px 52px; border-top: 1px solid var(--rule); }
+/* All sections are full-width elements; .wrap handles max-width inside */
+.s { padding: 0; border-top: 1px solid var(--rule); }
+.s-wrap { padding: 140px 0; } /* inner vertical padding on the .wrap */
 .s-tag {
   font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-4);
-  display: flex; align-items: center; gap: 14px; margin-bottom: 64px;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 80px;
 }
 .s-tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--gold); }
 
 /* ── WHO WE ARE ───────────────────────────── */
 .who-grid {
-  display: grid; grid-template-columns: 440px 1fr; gap: 0;
+  display: grid; grid-template-columns: 420px 1fr; gap: 0;
 }
 .who-left {
-  padding-right: 72px; border-right: 1px solid var(--rule);
+  padding-right: 80px; border-right: 1px solid var(--rule);
   display: flex; flex-direction: column; justify-content: space-between;
 }
 .who-headline {
   font-weight: 200;
-  font-size: clamp(40px,4.5vw,64px);
-  line-height: 1.06; letter-spacing: -0.02em; color: var(--ink);
+  font-size: clamp(40px, 3.8vw, 58px);
+  line-height: 1.08; letter-spacing: -0.02em; color: var(--ink);
 }
 .who-headline .serif {
   font-family: 'Instrument Serif', serif;
   font-style: italic; font-weight: 400; color: var(--gold);
 }
-
-/* Letter-by-letter "Specialist" */
-.specialist-word { display: inline-flex; overflow: hidden; }
+.specialist-word { display: inline-flex; overflow: hidden; vertical-align: bottom; }
 .specialist-word .sl {
   display: inline-block;
-  transform: translateY(110%);
-  opacity: 0;
-  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1),
-              opacity 0.4s ease;
+  transform: translateY(110%); opacity: 0;
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
 }
 .specialist-word.animated .sl { transform: translateY(0); opacity: 1; }
 
-.who-meta { margin-top: 52px; border-top: 1px solid var(--rule); }
+.who-meta { margin-top: 56px; border-top: 1px solid var(--rule); }
 .who-meta-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 0; border-bottom: 1px solid var(--rule);
+  padding: 16px 0; border-bottom: 1px solid var(--rule);
 }
-.who-meta-row .k {
-  font-size: 9px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--ink-4);
-}
-.who-meta-row .v { font-size: 12px; color: var(--ink-2); font-weight: 400; }
-.who-right { padding-left: 72px; display: flex; flex-direction: column; gap: 24px; }
-.who-body { font-size: 16px; line-height: 1.85; font-weight: 300; color: var(--ink-2); margin-bottom: 4px; }
+.who-meta-row .k { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-4); }
+.who-meta-row .v { font-size: 13px; color: var(--ink-2); font-weight: 400; }
+
+.who-right { padding-left: 80px; display: flex; flex-direction: column; gap: 28px; }
+.who-body { font-size: 16px; line-height: 1.85; font-weight: 300; color: var(--ink-2); }
 .who-body strong { font-weight: 500; color: var(--ink); }
-.who-callout {
-  margin-top: 8px; padding: 28px 32px;
-  background: var(--surface); border-left: 2px solid var(--gold);
-}
+.who-callout { padding: 32px 36px; background: var(--surface); border-left: 2px solid var(--gold); }
 .who-callout-text {
   font-family: 'Instrument Serif', serif;
-  font-style: italic; font-size: 22px; line-height: 1.5;
+  font-style: italic; font-size: 24px; line-height: 1.5;
   color: var(--ink-2); font-weight: 400;
 }
 
-/* ── APS DIFFERENCE ───────────────────────── */
-.diff-section { background: var(--dark); border-top: none; }
-.diff-inner { padding: 120px 52px; }
+/* ── APS DIFFERENCE — full dark bleed ─────── */
+.diff-section { background: var(--dark); }
+.diff-section .s-wrap { padding: 140px 0; }
 .diff-tag {
   font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
   color: rgba(255,255,255,0.25);
-  display: flex; align-items: center; gap: 14px; margin-bottom: 64px;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 80px;
 }
 .diff-tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--gold); }
-.diff-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 2px; background: rgba(255,255,255,0.04);
-}
+.diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: rgba(255,255,255,0.04); }
 .diff-card {
-  background: var(--dark-2); padding: 48px 44px;
+  background: var(--dark-2); padding: 56px 52px;
   position: relative; cursor: none; transition: background 0.35s;
 }
 .diff-card:hover { background: #1e1e27; }
@@ -431,57 +422,95 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
   transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
 }
 .diff-card:hover::before { width: 100%; }
-.diff-num { font-size: 11px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 24px; display: block; }
-.diff-title { font-weight: 300; font-size: 24px; line-height: 1.15; color: var(--white); margin-bottom: 16px; }
-.diff-body { font-size: 13px; line-height: 1.78; color: rgba(255,255,255,0.38); font-weight: 300; }
+.diff-num { font-size: 11px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 28px; display: block; font-weight: 400; }
+.diff-title { font-weight: 300; font-size: 26px; line-height: 1.15; color: var(--white); margin-bottom: 16px; letter-spacing: -0.01em; }
+.diff-body { font-size: 16px; line-height: 1.75; color: rgba(255,255,255,0.4); font-weight: 300; }
 
-/* ── CANADA ───────────────────────────────── */
+/* ── CANADA — single-column card layout ──── */
 .canada-intro {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 80px; margin-bottom: 72px;
+  gap: 80px; margin-bottom: 80px; align-items: end;
 }
 .canada-headline {
-  font-weight: 200; font-size: clamp(36px,4vw,58px);
+  font-weight: 200; font-size: clamp(36px, 4vw, 58px);
   line-height: 1.04; letter-spacing: -0.02em; color: var(--ink);
 }
 .canada-headline .serif {
   font-family: 'Instrument Serif', serif; font-style: italic; color: var(--gold);
 }
 .canada-intro-text {
-  font-size: 15px; line-height: 1.8; font-weight: 300; color: var(--ink-3);
-  display: flex; align-items: flex-end;
+  font-size: 16px; line-height: 1.8; font-weight: 300; color: var(--ink-3);
 }
-.compare-table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--rule); }
-.compare-table th {
-  font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--ink-4); font-weight: 400; padding: 16px 20px;
-  text-align: left; border-bottom: 1px solid var(--rule);
-}
-.compare-table th:last-child { color: var(--gold); }
-.compare-table td {
-  padding: 20px; font-size: 13px; line-height: 1.65;
-  font-weight: 300; color: var(--ink-3); border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-.compare-table td:first-child {
-  font-weight: 500; color: var(--ink-2); font-size: 12px;
-  letter-spacing: 0.06em; white-space: nowrap; width: 180px;
-}
-.compare-table td:last-child { color: var(--ink); font-weight: 400; }
-.compare-table tr:hover td { background: var(--surface); }
-.compare-good { color: var(--gold-2); font-weight: 500; }
 
-/* ── SERVICES 2×3 GRID ────────────────────── */
-.services-grid {
+/* Single-column advantage cards */
+.canada-cards { display: flex; flex-direction: column; }
+.canada-card {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 200px 1fr 1fr;
+  border-top: 1px solid var(--rule);
+  position: relative; overflow: hidden; cursor: none;
+}
+.canada-card:last-child { border-bottom: 1px solid var(--rule); }
+.canada-card::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  height: 1px; width: 0; background: var(--gold);
+  transition: width 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.canada-card:hover::after { width: 100%; }
+.canada-card-cat {
+  padding: 32px 32px 32px 0;
+  border-right: 1px solid var(--rule);
+  display: flex; align-items: center;
+}
+.canada-cat-label {
+  font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-3);
+  font-weight: 500;
+}
+.canada-card-usa {
+  padding: 32px 40px;
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.canada-card-aps {
+  padding: 32px 40px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.canada-col-label {
+  font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-4); margin-bottom: 10px; display: block;
+}
+.canada-col-label.gold { color: var(--gold); }
+.canada-card-usa p { font-size: 14px; line-height: 1.7; color: var(--ink-4); font-weight: 300; }
+.canada-card-aps p { font-size: 14px; line-height: 1.7; color: var(--ink-2); font-weight: 300; }
+.compare-good { color: var(--gold-2); font-weight: 500; }
+/* Column headers above cards */
+.canada-col-headers {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 0;
+  background: var(--surface);
+}
+.canada-col-headers span {
+  padding: 14px 40px;
+  font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-4);
+  border-right: 1px solid var(--rule);
+}
+.canada-col-headers span:first-child { padding-left: 0; }
+.canada-col-headers span:last-child { border-right: none; color: var(--gold); }
+
+/* ── SERVICES — 2×3 grid ─────────────────── */
+.services-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
   border-left: 1px solid var(--rule);
   border-top: 1px solid var(--rule);
 }
 .svc-card {
   border-right: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
-  padding: 44px 40px 56px;
+  padding: 52px 48px 64px;
   position: relative; cursor: none;
   transition: background 0.35s; overflow: hidden;
 }
@@ -492,21 +521,22 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
 }
 .svc-card:hover::after { height: 100%; }
 .svc-card:hover { background: var(--surface); }
-.svc-n { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 28px; display: block; }
-.svc-t {
-  font-weight: 300; font-size: 24px; line-height: 1.15;
-  letter-spacing: -0.01em; margin-bottom: 14px; color: var(--ink);
-}
-.svc-b { font-size: 13px; line-height: 1.75; color: var(--ink-3); font-weight: 300; }
+.svc-n { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 32px; display: block; font-weight: 400; }
+.svc-t { font-weight: 300; font-size: 26px; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 16px; color: var(--ink); }
+.svc-b { font-size: 16px; line-height: 1.75; color: var(--ink-3); font-weight: 300; }
+/* Arrow: SVG so it renders cleanly on all platforms */
 .svc-arrow {
-  position: absolute; bottom: 36px; right: 36px; font-size: 15px;
-  color: var(--rule); transition: color 0.3s, transform 0.3s;
+  position: absolute; bottom: 36px; right: 36px;
+  width: 18px; height: 18px; opacity: 0.2;
+  transition: opacity 0.3s, transform 0.3s;
 }
-.svc-card:hover .svc-arrow { color: var(--gold); transform: translate(3px,-3px); }
+.svc-arrow path { stroke: var(--ink); fill: none; stroke-width: 1.5; }
+.svc-card:hover .svc-arrow { opacity: 1; transform: translate(3px,-3px); }
+.svc-card:hover .svc-arrow path { stroke: var(--gold); }
 
 /* ── PROCESS ──────────────────────────────── */
 .proc-item {
-  display: grid; grid-template-columns: 180px 1fr 1fr;
+  display: grid; grid-template-columns: 200px 1fr 1fr;
   border-bottom: 1px solid var(--rule);
   position: relative; cursor: none; overflow: hidden;
 }
@@ -517,53 +547,48 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
 }
 .proc-item:hover::after { width: 100%; }
 .proc-item:nth-child(even) .proc-num-cell { background: var(--surface); }
-.proc-num-cell {
-  padding: 44px 36px; border-right: 1px solid var(--rule);
-  transition: background 0.3s;
-}
+.proc-num-cell { padding: 52px 40px; border-right: 1px solid var(--rule); transition: background 0.3s; }
 .proc-num {
-  font-weight: 200; font-size: 44px;
+  font-weight: 200; font-size: 52px;
   letter-spacing: -0.04em; line-height: 0.9; color: var(--rule);
   transition: color 0.4s;
 }
 .proc-item:hover .proc-num { color: var(--gold); }
-.proc-title-cell {
-  padding: 44px 40px; border-right: 1px solid var(--rule); display: flex; align-items: center;
-}
-.proc-title { font-weight: 300; font-size: 20px; letter-spacing: -0.01em; color: var(--ink); }
-.proc-body-cell { padding: 44px 40px; display: flex; align-items: center; }
-.proc-body { font-size: 13px; line-height: 1.8; color: var(--ink-3); font-weight: 300; }
+.proc-title-cell { padding: 52px 48px; border-right: 1px solid var(--rule); display: flex; align-items: center; }
+.proc-title { font-weight: 300; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
+.proc-body-cell { padding: 52px 48px; display: flex; align-items: center; }
+.proc-body { font-size: 16px; line-height: 1.8; color: var(--ink-3); font-weight: 300; }
 
-/* ── BID SUPPORT ──────────────────────────── */
-.bid-section { background: var(--dark); border-top: none; }
-.bid-inner { padding: 100px 52px; }
+/* ── BID SUPPORT — dark bleed ─────────────── */
+.bid-section { background: var(--dark); }
+.bid-section .s-wrap { padding: 120px 0; }
 .bid-tag {
   font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
   color: rgba(255,255,255,0.25);
-  display: flex; align-items: center; gap: 14px; margin-bottom: 64px;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 80px;
 }
 .bid-tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--gold); }
 .bid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
 .bid-headline {
   font-weight: 200; font-size: clamp(36px,4.5vw,60px);
-  line-height: 1.0; letter-spacing: -0.025em; color: var(--white); margin-bottom: 24px;
+  line-height: 1.0; letter-spacing: -0.025em; color: var(--white); margin-bottom: 28px;
 }
 .bid-headline .serif { font-family: 'Instrument Serif', serif; font-style: italic; color: var(--gold); }
-.bid-sub { font-size: 14px; line-height: 1.78; color: rgba(255,255,255,0.35); font-weight: 300; }
+.bid-sub { font-size: 16px; line-height: 1.78; color: rgba(255,255,255,0.35); font-weight: 300; }
 .bid-right { border-left: 1px solid rgba(255,255,255,0.06); padding-left: 80px; }
-.bid-list { list-style: none; display: flex; flex-direction: column; }
+.bid-list { list-style: none; }
 .bid-list li {
-  padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
-  font-size: 13px; line-height: 1.6;
+  padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 16px; line-height: 1.6;
   color: rgba(255,255,255,0.45); font-weight: 300;
-  display: flex; align-items: baseline; gap: 14px;
+  display: flex; align-items: baseline; gap: 16px;
 }
 .bid-list li::before { content: '—'; color: var(--gold); flex-shrink: 0; font-size: 10px; }
 
 /* ── CTA ──────────────────────────────────── */
-.cta-section { padding: 0; border-top: 1px solid var(--rule); }
+.cta-section { border-top: 1px solid var(--rule); }
 .cta-inner {
-  padding: 140px 52px;
+  padding: 160px 0;
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 80px; align-items: end;
   position: relative; overflow: hidden;
@@ -572,14 +597,12 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
   font-weight: 200; font-size: clamp(44px,6.5vw,96px);
   line-height: 0.97; letter-spacing: -0.025em; color: var(--ink);
 }
-.cta-headline .serif {
-  font-family: 'Instrument Serif', serif; font-style: italic; color: var(--gold);
-}
-.cta-right { display: flex; flex-direction: column; justify-content: flex-end; gap: 28px; }
-.cta-text { font-size: 15px; line-height: 1.75; font-weight: 300; color: var(--ink-3); }
+.cta-headline .serif { font-family: 'Instrument Serif', serif; font-style: italic; color: var(--gold); }
+.cta-right { display: flex; flex-direction: column; gap: 32px; }
+.cta-text { font-size: 16px; line-height: 1.75; font-weight: 300; color: var(--ink-3); }
 .email-btn {
   display: inline-flex; align-items: center; gap: 16px;
-  border: 1px solid var(--rule); padding: 18px 32px;
+  border: 1px solid var(--rule); padding: 20px 36px;
   font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-3); background: none;
   position: relative; overflow: hidden;
@@ -589,23 +612,26 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
 }
 .email-btn::before {
   content: ''; position: absolute; inset: 0;
-  background: var(--gold);
-  transform: scaleX(0); transform-origin: left;
+  background: var(--gold); transform: scaleX(0); transform-origin: left;
   transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); z-index: 0;
 }
 .email-btn:hover::before { transform: scaleX(1); }
 .email-btn:hover { border-color: var(--gold); color: var(--dark); }
 .email-btn span { position: relative; z-index: 1; }
+/* SVG arrow for email button — crisp on all platforms */
 .email-btn .ico {
-  position: relative; z-index: 1; font-size: 13px; opacity: 0.4;
-  transition: opacity 0.3s, transform 0.3s;
+  position: relative; z-index: 1;
+  width: 14px; height: 14px; opacity: 0.4;
+  transition: opacity 0.3s, transform 0.3s; flex-shrink: 0;
 }
+.email-btn .ico path { stroke: currentColor; fill: none; stroke-width: 1.5; }
 .email-btn:hover .ico { opacity: 1; transform: translate(2px,-2px); }
 .cta-bg {
   position: absolute; right: -40px; bottom: -60px;
   font-weight: 200; font-size: clamp(100px,18vw,260px);
-  color: rgba(18,18,26,0.035); letter-spacing: -0.04em; line-height: 1;
+  color: rgba(18,18,26,0.03); letter-spacing: -0.04em; line-height: 1;
   pointer-events: none; user-select: none; white-space: nowrap;
+  z-index: 0;
 }
 
 /* ── TOAST ────────────────────────────────── */
@@ -622,30 +648,41 @@ body.page-ready .hero-headline .line:nth-child(3) span { animation: slideUp 1.1s
 
 /* ── FOOTER ───────────────────────────────── */
 footer {
-  padding: 52px 52px;
   border-top: 1px solid var(--rule);
-  display: grid; grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  /* footer animation */
   opacity: 0; transform: translateY(20px);
   transition: opacity 1s ease, transform 1s cubic-bezier(0.16,1,0.3,1);
 }
 footer.visible { opacity: 1; transform: translateY(0); }
+.footer-inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 52px var(--pad-h);
+  display: grid;
+  grid-template-columns: 180px 1fr 180px;
+  align-items: center; gap: 24px;
+}
 .f-logo {
-  font-weight: 500; font-size: 12px;
+  font-weight: 500; font-size: 13px;
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink);
 }
-.f-logo b { color: var(--gold); }
-.f-mid { text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; }
-.f-copy { font-size: 11px; color: var(--ink-4); letter-spacing: 0.06em; }
+.f-logo b { color: var(--gold); font-weight: 500; }
+.f-mid {
+  text-align: center; display: flex; flex-direction: column; gap: 8px; align-items: center;
+  min-width: 0; /* prevent overflow */
+}
+.f-copy { font-size: 11px; color: var(--ink-4); letter-spacing: 0.06em; white-space: nowrap; }
 .f-tagline {
   font-family: 'Instrument Serif', serif;
-  font-style: italic; font-size: 13px; color: var(--ink-4);
+  font-style: italic; font-size: 14px; color: var(--ink-4);
   opacity: 0; transform: translateY(8px);
   transition: opacity 0.8s 0.4s, transform 0.8s 0.4s cubic-bezier(0.16,1,0.3,1);
+  white-space: nowrap;
 }
 footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
-.f-loc { font-size: 10px; color: var(--ink-4); letter-spacing: 0.16em; text-transform: uppercase; text-align: right; }
+.f-loc {
+  font-size: 10px; color: var(--ink-4);
+  letter-spacing: 0.16em; text-transform: uppercase; text-align: right;
+  white-space: nowrap;
+}
 
 /* ── SCROLL REVEAL ────────────────────────── */
 .reveal {
@@ -666,28 +703,75 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 /* ── RESPONSIVE ───────────────────────────── */
 @media (max-width: 1060px) {
-  nav { padding: 18px 28px; }
+  :root { --pad-h: 28px; }
+
+  /* Nav */
+  nav .nav-inner { padding-top: 18px; padding-bottom: 18px; }
   .nav-logo .sep, .nav-logo .full { display: none; }
-  .hero { grid-template-columns: 1fr; padding: 0 28px; }
-  .hero-main { border-right: none; padding-right: 0; }
-  .hero-panel { border-top: 1px solid var(--rule); padding-left: 0; padding-top: 32px; grid-column: 1; }
-  .s { padding: 80px 28px; }
+  .nav-overlay { padding-top: 100px; }
+
+  /* Hero */
+  .hero-body-wrap { grid-template-columns: 1fr; }
+  .hero-main { border-right: none; padding-right: 0; padding-bottom: 48px; align-items: flex-start; padding-top: 52px; }
+  .hero-headline { font-size: clamp(48px, 12vw, 80px); }
+  .hero-panel { border-top: 1px solid var(--rule); padding-left: 0; padding-top: 40px; padding-bottom: 52px; }
+  .hero-proof-item { grid-template-columns: auto 1fr; }
+  .hero-proof-num { font-size: 32px; }
+  .hero-location { font-size: 9px; letter-spacing: 0.14em; }
+
+  /* Sections */
+  .s-wrap { padding: 80px 0; }
+  .diff-section .s-wrap, .bid-section .s-wrap { padding: 80px 0; }
+
+  /* Who */
   .who-grid { grid-template-columns: 1fr; }
-  .who-left { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 48px; }
-  .who-right { padding-left: 0; padding-top: 48px; }
+  .who-left { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 56px; }
+  .who-right { padding-left: 0; padding-top: 56px; }
+
+  /* Diff */
   .diff-grid { grid-template-columns: 1fr; }
-  .diff-inner, .bid-inner { padding: 80px 28px; }
+
+  /* Canada */
   .canada-intro { grid-template-columns: 1fr; gap: 32px; }
+  .canada-col-headers { display: none; }
+  .canada-card { grid-template-columns: 1fr; }
+  .canada-card-cat { padding: 24px 0 8px; border-right: none; border-bottom: none; }
+  .canada-card-usa { padding: 0 0 8px; border-right: none; }
+  .canada-card-aps { padding: 0 0 24px; }
+  .canada-col-label { display: inline-block; margin-bottom: 4px; }
+
+  /* Services */
   .services-grid { grid-template-columns: 1fr; }
-  .proc-item { grid-template-columns: 60px 1fr; }
-  .proc-body-cell { grid-column: 2; padding-top: 0; padding-bottom: 44px; }
-  .proc-title-cell { border-right: none; }
+  /* Hide SVG arrows on mobile — font rendering inconsistency */
+  .svc-arrow { display: none; }
+
+  /* Process */
+  .proc-item { grid-template-columns: 64px 1fr; }
+  .proc-num-cell { padding: 36px 24px; }
+  .proc-num { font-size: 36px; }
+  .proc-title-cell { border-right: none; padding: 36px 28px 12px; }
+  .proc-body-cell { grid-column: 2; padding: 0 28px 36px; }
+
+  /* Bid */
   .bid-grid { grid-template-columns: 1fr; gap: 40px; }
   .bid-right { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 40px; }
-  .cta-inner { grid-template-columns: 1fr; gap: 40px; }
-  footer { grid-template-columns: 1fr; gap: 12px; text-align: center; padding: 40px 28px; }
+
+  /* CTA */
+  .cta-inner { grid-template-columns: 1fr; gap: 40px; padding: 100px 0; }
+
+  /* Footer */
+  .footer-inner { grid-template-columns: 1fr; text-align: center; gap: 10px; padding: 44px var(--pad-h); }
+  .f-mid { white-space: normal; }
+  .f-copy, .f-tagline { white-space: normal; }
   .f-loc { text-align: center; }
-  .nav-overlay { padding: 100px 28px 40px; }
+
+  /* Mobile: hide loader scramble text — remove eyebrow animation trigger */
+  .hero-eyebrow-r { display: none; }
+}
+
+@media (max-width: 600px) {
+  .hero-headline { font-size: clamp(40px, 11vw, 64px); }
+  .who-headline { font-size: clamp(32px, 9vw, 48px); }
 }
 </style>
 </head>
@@ -701,7 +785,7 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
   </div>
   <div class="loader-mid">
     <div class="loader-num"><span id="loaderNum">0</span><b>%</b></div>
-    <div class="loader-tagline">Canadian Service Production, Built for International Ambition</div>
+    <div class="loader-tagline" id="loaderTagline">Canadian Service Production, Built for International Ambition</div>
   </div>
   <div class="loader-bottom">
     <div class="loader-bar-wrap"><div class="loader-bar-fill" id="loaderBar"></div></div>
@@ -719,26 +803,28 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 <!-- NAV -->
 <nav id="nav">
-  <a href="#" class="nav-logo">
-    <span>APS</span>
-    <span class="sep"></span>
-    <span class="full">Analog Production Services</span>
-  </a>
-  <button class="nav-burger" id="burger" aria-label="Toggle menu">
-    <span class="burger-line"></span>
-    <span class="burger-line"></span>
-    <span class="burger-line"></span>
-  </button>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span>APS</span>
+      <span class="sep"></span>
+      <span class="full">Analog Production Services</span>
+    </a>
+    <button class="nav-burger" id="burger" aria-label="Toggle menu">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
+  </div>
 </nav>
 
-<!-- FULL-SCREEN MENU OVERLAY -->
+<!-- OVERLAY MENU -->
 <div class="nav-overlay" id="navOverlay">
   <ul class="overlay-links">
-    <li><a href="#who"      onclick="closeMenu()"><span>About</span>     <span class="link-num">01</span></a></li>
-    <li><a href="#services" onclick="closeMenu()"><span>Services</span>  <span class="link-num">02</span></a></li>
-    <li><a href="#canada"   onclick="closeMenu()"><span>Canada</span>    <span class="link-num">03</span></a></li>
+    <li><a href="#who"      onclick="closeMenu()"><span>About</span>      <span class="link-num">01</span></a></li>
+    <li><a href="#services" onclick="closeMenu()"><span>Services</span>   <span class="link-num">02</span></a></li>
+    <li><a href="#canada"   onclick="closeMenu()"><span>Canada</span>     <span class="link-num">03</span></a></li>
     <li><a href="#process"  onclick="closeMenu()"><span>How We Work</span><span class="link-num">04</span></a></li>
-    <li><a href="#contact"  onclick="closeMenu()"><span>Contact</span>   <span class="link-num">05</span></a></li>
+    <li><a href="#contact"  onclick="closeMenu()"><span>Contact</span>    <span class="link-num">05</span></a></li>
   </ul>
   <div class="overlay-bottom">
     <span class="overlay-email" id="overlayEmail"></span>
@@ -748,46 +834,50 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-top-bar">
-    <span class="hero-eyebrow" id="heroEyebrow">Canadian Service Production &nbsp;—&nbsp; Built for International Ambition</span>
-    <span class="hero-eyebrow-r">Toronto, Canada</span>
-  </div>
-  <div class="hero-main">
-    <h1 class="hero-headline">
-      <span class="line"><span>Canada,</span></span>
-      <span class="line"><span>Without the</span></span>
-      <span class="line"><span class="hero-serif">Friction.</span></span>
-    </h1>
-  </div>
-  <div class="hero-panel">
-    <div>
-      <div class="hero-panel-label">What We Do</div>
-      <p class="hero-panel-text">A collection of Canada's most experienced commercial line producers, assembled under one roof — built specifically to service US and international production companies shooting in Canada.</p>
+  <div class="wrap">
+    <div class="hero-top-bar">
+      <span class="hero-eyebrow" id="heroEyebrow">Canadian Service Production &nbsp;—&nbsp; Built for International Ambition</span>
+      <span class="hero-eyebrow-r">Toronto, Canada</span>
     </div>
-    <div>
-      <div class="hero-panel-divider"></div>
-      <div class="hero-proof">
+    <div class="hero-body-wrap">
+      <div class="hero-main">
+        <h1 class="hero-headline">
+          <span class="line"><span>Canada,</span></span>
+          <span class="line"><span>Without the</span></span>
+          <span class="line"><span class="hero-serif">Friction.</span></span>
+        </h1>
+      </div>
+      <div class="hero-panel">
         <div>
-          <div class="hero-proof-num">~30<b>%</b></div>
-          <div class="hero-proof-label">Savings via USD–CAD<br>exchange advantage</div>
+          <div class="hero-panel-label">What We Do</div>
+          <p class="hero-panel-text">A collection of Canada's most experienced commercial line producers, assembled under one roof — built specifically to service US and international production companies shooting in Canada.</p>
         </div>
         <div>
-          <div class="hero-proof-num">10<b>+</b></div>
-          <div class="hero-proof-label">Years producing<br>in Canada</div>
+          <div class="hero-panel-divider"></div>
+          <div class="hero-proof">
+            <div class="hero-proof-item">
+              <div class="hero-proof-num">~30<b>%</b></div>
+              <div class="hero-proof-label">Savings via USD–CAD<br>exchange advantage</div>
+            </div>
+            <div class="hero-proof-item">
+              <div class="hero-proof-num">10<b>+</b></div>
+              <div class="hero-proof-label">Years producing<br>in Canada</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="hero-foot">
-    <div class="hero-scroll" id="heroScroll">
-      <span class="hero-scroll-line"></span>
-      Scroll to explore
+    <div class="hero-foot">
+      <div class="hero-scroll" id="heroScroll">
+        <span class="hero-scroll-line"></span>
+        Scroll to explore
+      </div>
+      <span class="hero-location">Toronto &nbsp;&bull;&nbsp; GTA &nbsp;&bull;&nbsp; Canada</span>
     </div>
-    <span class="hero-location">Toronto &nbsp;&bull;&nbsp; GTA &nbsp;&bull;&nbsp; Canada</span>
   </div>
 </section>
 
-<!-- MARQUEE -->
+<!-- MARQUEE — full bleed -->
 <div class="marquee-wrap">
   <div class="marquee-track" id="marqueeTrack">
     <span class="marquee-item">Commercials</span><span class="marquee-sep">&#9632;</span>
@@ -815,25 +905,29 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 <!-- WHO WE ARE -->
 <section class="s" id="who">
-  <div class="s-tag reveal">Who We Are</div>
-  <div class="who-grid">
-    <div class="who-left reveal rd1">
-      <div>
-        <h2 class="who-headline">The Only&nbsp;<span class="serif"><span class="specialist-word" id="specialistWord"></span></span><br>Service Company<br>in Toronto.</h2>
-      </div>
-      <div class="who-meta">
-        <div class="who-meta-row"><span class="k">Homebase</span><span class="v">Toronto, Canada</span></div>
-        <div class="who-meta-row"><span class="k">Scope</span><span class="v">National — All Major Cities</span></div>
-        <div class="who-meta-row"><span class="k">Focus</span><span class="v">US &amp; International Clients</span></div>
-        <div class="who-meta-row"><span class="k">Experience</span><span class="v">10+ Years in Market</span></div>
-      </div>
-    </div>
-    <div class="who-right">
-      <p class="who-body reveal rd2">For over a decade we've been the production managers, producers and executive producers who have brought <strong>commercials, branded content and music videos</strong> to life across every major Canadian city.</p>
-      <p class="who-body reveal rd2">APS is built differently. As the <strong>only specialist service production company in Toronto</strong> with a singular focus on supporting overseas clients, we're set up to make Canada work for you.</p>
-      <p class="who-body reveal rd2">Your project isn't competing with our roster. We're not balancing domestic clients with overseas servicing. Our total specialization enables APS to execute where other bolt-on servicing arms cannot.</p>
-      <div class="who-callout reveal rd3">
-        <p class="who-callout-text">"By uniting Canada's most trusted commercial line producers under one banner, we offer something rare — depth, redundancy, and choice."</p>
+  <div class="wrap">
+    <div class="s-wrap">
+      <div class="s-tag reveal">Who We Are</div>
+      <div class="who-grid">
+        <div class="who-left reveal rd1">
+          <div>
+            <h2 class="who-headline">The Only&nbsp;<span class="serif"><span class="specialist-word" id="specialistWord"></span></span><br>Service Company<br>in Toronto.</h2>
+          </div>
+          <div class="who-meta">
+            <div class="who-meta-row"><span class="k">Homebase</span><span class="v">Toronto, Canada</span></div>
+            <div class="who-meta-row"><span class="k">Scope</span><span class="v">National — All Major Cities</span></div>
+            <div class="who-meta-row"><span class="k">Focus</span><span class="v">US &amp; International Clients</span></div>
+            <div class="who-meta-row"><span class="k">Experience</span><span class="v">10+ Years in Market</span></div>
+          </div>
+        </div>
+        <div class="who-right">
+          <p class="who-body reveal rd2">For over a decade we've been the production managers, producers and executive producers who have brought <strong>commercials, branded content and music videos</strong> to life across every major Canadian city.</p>
+          <p class="who-body reveal rd2">APS is built differently. As the <strong>only specialist service production company in Toronto</strong> with a singular focus on supporting overseas clients, we're set up to make Canada work for you.</p>
+          <p class="who-body reveal rd2">Your project isn't competing with our roster. We're not balancing domestic clients with overseas servicing. Our total specialization enables APS to execute where other bolt-on servicing arms cannot.</p>
+          <div class="who-callout reveal rd3">
+            <p class="who-callout-text">"By uniting Canada's most trusted commercial line producers under one banner, we offer something rare — depth, redundancy, and choice."</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -841,28 +935,30 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 <!-- APS DIFFERENCE -->
 <section class="diff-section">
-  <div class="diff-inner">
-    <div class="diff-tag reveal">The APS Difference</div>
-    <div class="diff-grid">
-      <div class="diff-card reveal">
-        <span class="diff-num">01</span>
-        <h3 class="diff-title">Singular Focus</h3>
-        <p class="diff-body">No bottlenecks, no availability issues, no compromises. Your project gets our complete attention — we're not splitting bandwidth between domestic and international clients.</p>
-      </div>
-      <div class="diff-card reveal rd1">
-        <span class="diff-num">02</span>
-        <h3 class="diff-title">Depth &amp; Redundancy</h3>
-        <p class="diff-body">A curated roster of senior line producers across specialties. No single point of failure, consistent availability, and the best match for every project scope and budget range.</p>
-      </div>
-      <div class="diff-card reveal rd1">
-        <span class="diff-num">03</span>
-        <h3 class="diff-title">Designed for International</h3>
-        <p class="diff-body">We understand cross-border production realities: approvals, currency exposure, visa requirements, client and agency expectations, and compressed timelines. Canada feels frictionless with APS.</p>
-      </div>
-      <div class="diff-card reveal rd2">
-        <span class="diff-num">04</span>
-        <h3 class="diff-title">Bigger Scope. Smarter Spend.</h3>
-        <p class="diff-body">Canada isn't just a cheaper alternative — it's an opportunity to do more. Upgrade locations, extend shoot days, access higher-end equipment, or allocate more budget on screen.</p>
+  <div class="wrap">
+    <div class="s-wrap">
+      <div class="diff-tag reveal">The APS Difference</div>
+      <div class="diff-grid">
+        <div class="diff-card reveal">
+          <span class="diff-num">01</span>
+          <h3 class="diff-title">Singular Focus</h3>
+          <p class="diff-body">No bottlenecks, no availability issues, no compromises. Your project gets our complete attention — we're not splitting bandwidth between domestic and international clients.</p>
+        </div>
+        <div class="diff-card reveal rd1">
+          <span class="diff-num">02</span>
+          <h3 class="diff-title">Depth &amp; Redundancy</h3>
+          <p class="diff-body">A curated roster of senior line producers across specialties. No single point of failure, consistent availability, and the best match for every project scope and budget range.</p>
+        </div>
+        <div class="diff-card reveal rd1">
+          <span class="diff-num">03</span>
+          <h3 class="diff-title">Designed for International</h3>
+          <p class="diff-body">We understand cross-border production realities: approvals, currency exposure, visa requirements, client and agency expectations, and compressed timelines. Canada feels frictionless with APS.</p>
+        </div>
+        <div class="diff-card reveal rd2">
+          <span class="diff-num">04</span>
+          <h3 class="diff-title">Bigger Scope. Smarter Spend.</h3>
+          <p class="diff-body">Canada isn't just a cheaper alternative — it's an opportunity to do more. Upgrade locations, extend shoot days, access higher-end equipment, or allocate more budget on screen.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -870,137 +966,179 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 <!-- CANADA -->
 <section class="s" id="canada">
-  <div class="s-tag reveal">Why Canada</div>
-  <div class="canada-intro">
-    <h2 class="canada-headline reveal rd1">More Production Value.<br><span class="serif">Fewer Tradeoffs.</span></h2>
-    <p class="canada-intro-text reveal rd2">~30% savings through favourable USD–CAD exchange rates. No commercial labour unions. Full sales tax rebates we handle for you. World-class crews, cities that double globally, and a visual palette that stretches from coastline to tundra.</p>
+  <div class="wrap">
+    <div class="s-wrap">
+      <div class="s-tag reveal">Why Canada</div>
+      <div class="canada-intro">
+        <h2 class="canada-headline reveal rd1">More Production Value.<br><span class="serif">Fewer Tradeoffs.</span></h2>
+        <p class="canada-intro-text reveal rd2">~30% savings through favourable USD–CAD exchange rates. No commercial labour unions. Full sales tax rebates we handle for you. World-class crews, cities that double globally, and a visual palette that stretches from coastline to tundra.</p>
+      </div>
+      <!-- Column headers -->
+      <div class="canada-col-headers reveal">
+        <span></span>
+        <span>Shooting in the US</span>
+        <span>Shooting in Canada with APS</span>
+      </div>
+      <!-- Cards -->
+      <div class="canada-cards reveal">
+        <div class="canada-card">
+          <div class="canada-card-cat"><span class="canada-cat-label">Budget<br>Efficiency</span></div>
+          <div class="canada-card-usa">
+            <span class="canada-col-label">US</span>
+            <p>USD-denominated spend. Higher crew day rates. Limited tax recovery.</p>
+          </div>
+          <div class="canada-card-aps">
+            <span class="canada-col-label gold">Canada with APS</span>
+            <p><span class="compare-good">~30% savings</span> via USD–CAD exchange. ~25% lower crew rates than LA or NY. Full sales tax rebate — APS files for you.</p>
+          </div>
+        </div>
+        <div class="canada-card">
+          <div class="canada-card-cat"><span class="canada-cat-label">Crew &amp;<br>Infrastructure</span></div>
+          <div class="canada-card-usa">
+            <span class="canada-col-label">US</span>
+            <p>Premium pricing for top-tier equipment. Limited studio availability in major hubs.</p>
+          </div>
+          <div class="canada-card-aps">
+            <span class="canada-col-label gold">Canada with APS</span>
+            <p><span class="compare-good">World-class crews.</span> Preferred access with Panavision, ARRI, Keslow, and more. Abundant studio and LED volume wall availability.</p>
+          </div>
+        </div>
+        <div class="canada-card">
+          <div class="canada-card-cat"><span class="canada-cat-label">Locations</span></div>
+          <div class="canada-card-usa">
+            <span class="canada-col-label">US</span>
+            <p>High permitting costs. Geographic diversity often requires expensive travel.</p>
+          </div>
+          <div class="canada-card-aps">
+            <span class="canada-col-label gold">Canada with APS</span>
+            <p><span class="compare-good">Cities that double globally.</span> Mountains, coastlines, forests, deserts — all within reach. Film-friendly municipalities.</p>
+          </div>
+        </div>
+        <div class="canada-card">
+          <div class="canada-card-cat"><span class="canada-cat-label">Labour<br>Flexibility</span></div>
+          <div class="canada-card-usa">
+            <span class="canada-col-label">US</span>
+            <p>Rigid union structures. Longer prep timelines.</p>
+          </div>
+          <div class="canada-card-aps">
+            <span class="canada-col-label gold">Canada with APS</span>
+            <p><span class="compare-good">Non-union commercial environment.</span> Rapid crew mobilization. Faster turnarounds and greater creative agility.</p>
+          </div>
+        </div>
+        <div class="canada-card">
+          <div class="canada-card-cat"><span class="canada-cat-label">Client<br>Experience</span></div>
+          <div class="canada-card-usa">
+            <span class="canada-col-label">US</span>
+            <p>High costs often limit hospitality scope.</p>
+          </div>
+          <div class="canada-card-aps">
+            <span class="canada-col-label gold">Canada with APS</span>
+            <p><span class="compare-good">World-class cities</span> with exceptional hotels, dining, and culture. White-glove hospitality from pre-production to wrap.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <table class="compare-table reveal">
-    <thead>
-      <tr>
-        <th>Category</th>
-        <th>Shooting in the US</th>
-        <th>Shooting in Canada with APS</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Budget Efficiency</td>
-        <td>USD-denominated spend. Higher crew day rates. Limited tax recovery.</td>
-        <td><span class="compare-good">~30% savings</span> via USD–CAD exchange. ~25% lower crew rates than LA or NY. Full sales tax rebate — APS files for you.</td>
-      </tr>
-      <tr>
-        <td>Crew &amp; Infrastructure</td>
-        <td>Premium pricing for top-tier equipment. Limited studio availability in major hubs.</td>
-        <td><span class="compare-good">World-class crews.</span> Preferred access with Panavision, ARRI, Keslow, and more. Abundant studio and LED volume wall availability.</td>
-      </tr>
-      <tr>
-        <td>Locations</td>
-        <td>High permitting costs. Geographic diversity often requires expensive travel.</td>
-        <td><span class="compare-good">Cities that double globally.</span> Mountains, coastlines, forests, deserts, all within reach. Film-friendly municipalities.</td>
-      </tr>
-      <tr>
-        <td>Labour Flexibility</td>
-        <td>Rigid union structures. Longer prep timelines.</td>
-        <td><span class="compare-good">Non-union commercial environment.</span> Rapid crew mobilization. Faster turnarounds and greater creative agility.</td>
-      </tr>
-      <tr>
-        <td>Client Experience</td>
-        <td>High costs often limit hospitality scope.</td>
-        <td><span class="compare-good">World-class cities</span> with exceptional hotels, dining, and culture. White-glove hospitality from pre-production to wrap.</td>
-      </tr>
-    </tbody>
-  </table>
 </section>
 
 <!-- SERVICES -->
 <section class="s" id="services">
-  <div class="s-tag reveal">What We Deliver</div>
-  <div class="services-grid">
-    <div class="svc-card reveal">
-      <span class="svc-n">01</span>
-      <h3 class="svc-t">Production Management</h3>
-      <p class="svc-b">Single point of contact from prep through wrap. Schedules, call sheets, crew hiring, reporting, and daily execution — handled with precision.</p>
-      <span class="svc-arrow">&#8599;</span>
-    </div>
-    <div class="svc-card reveal rd1">
-      <span class="svc-n">02</span>
-      <h3 class="svc-t">Location &amp; Permitting</h3>
-      <p class="svc-b">Extensive knowledge of Canadian cities, studio facilities, and natural locations. Permitting, scouts, film-office relationships, and negotiations covered.</p>
-      <span class="svc-arrow">&#8599;</span>
-    </div>
-    <div class="svc-card reveal rd1">
-      <span class="svc-n">03</span>
-      <h3 class="svc-t">Crew &amp; Vendors</h3>
-      <p class="svc-b">A curated network of Canada's top crew, equipment houses, and trusted vendors. Preferred pricing with Panavision, ARRI, Keslow, and more.</p>
-      <span class="svc-arrow">&#8599;</span>
-    </div>
-    <div class="svc-card reveal rd2">
-      <span class="svc-n">04</span>
-      <h3 class="svc-t">Finance &amp; Accounting</h3>
-      <p class="svc-b">Production accounting, payroll, and full tax incentive administration and processing. Transparent reporting and zero surprises on the bottom line.</p>
-      <span class="svc-arrow">&#8599;</span>
-    </div>
-    <div class="svc-card reveal rd2">
-      <span class="svc-n">05</span>
-      <h3 class="svc-t">Immigration &amp; Logistics</h3>
-      <p class="svc-b">Visa and border requirements, currency exposure management, and the cross-border production realities that out-of-town EPs don't want to think about.</p>
-      <span class="svc-arrow">&#8599;</span>
-    </div>
-    <div class="svc-card reveal rd3">
-      <span class="svc-n">06</span>
-      <h3 class="svc-t">Creative Ecosystem</h3>
-      <p class="svc-b">Access to award-winning directors, department heads, studios, and post partners through our affiliated network. Supporting not just execution — but ambition.</p>
-      <span class="svc-arrow">&#8599;</span>
+  <div class="wrap">
+    <div class="s-wrap">
+      <div class="s-tag reveal">What We Deliver</div>
+      <div class="services-grid">
+        <div class="svc-card reveal">
+          <span class="svc-n">01</span>
+          <h3 class="svc-t">Production Management</h3>
+          <p class="svc-b">Single point of contact from prep through wrap. Schedules, call sheets, crew hiring, reporting, and daily execution — handled with precision.</p>
+          <svg class="svc-arrow" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M15 3H6M15 3V12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="svc-card reveal rd1">
+          <span class="svc-n">02</span>
+          <h3 class="svc-t">Location &amp; Permitting</h3>
+          <p class="svc-b">Extensive knowledge of Canadian cities, studio facilities, and natural locations. Permitting, scouts, film-office relationships, and negotiations covered.</p>
+          <svg class="svc-arrow" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M15 3H6M15 3V12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="svc-card reveal rd1">
+          <span class="svc-n">03</span>
+          <h3 class="svc-t">Crew &amp; Vendors</h3>
+          <p class="svc-b">A curated network of Canada's top crew, equipment houses, and trusted vendors. Preferred pricing with Panavision, ARRI, Keslow, and more.</p>
+          <svg class="svc-arrow" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M15 3H6M15 3V12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="svc-card reveal rd2">
+          <span class="svc-n">04</span>
+          <h3 class="svc-t">Finance &amp; Accounting</h3>
+          <p class="svc-b">Production accounting, payroll, and full tax incentive administration and processing. Transparent reporting and zero surprises on the bottom line.</p>
+          <svg class="svc-arrow" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M15 3H6M15 3V12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="svc-card reveal rd2">
+          <span class="svc-n">05</span>
+          <h3 class="svc-t">Immigration &amp; Logistics</h3>
+          <p class="svc-b">Visa and border requirements, currency exposure management, and the cross-border production realities that out-of-town EPs don't want to think about.</p>
+          <svg class="svc-arrow" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M15 3H6M15 3V12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="svc-card reveal rd3">
+          <span class="svc-n">06</span>
+          <h3 class="svc-t">Creative Ecosystem</h3>
+          <p class="svc-b">Access to award-winning directors, department heads, studios, and post partners through our affiliated network. Supporting not just execution — but ambition.</p>
+          <svg class="svc-arrow" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M15 3H6M15 3V12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- HOW WE WORK -->
 <section class="s" id="process">
-  <div class="s-tag reveal">How We Work</div>
-  <div class="process-list">
-    <div class="proc-item reveal">
-      <div class="proc-num-cell"><span class="proc-num">01</span></div>
-      <div class="proc-title-cell"><div class="proc-title">Bring Us in Early</div></div>
-      <div class="proc-body-cell"><p class="proc-body">We prefer to win bids with you. Bring APS in at the bid phase and we'll pressure-test budgets, identify creative upgrades Canada enables, and help you confidently propose the switch to your agency or client.</p></div>
-    </div>
-    <div class="proc-item reveal rd1">
-      <div class="proc-num-cell"><span class="proc-num">02</span></div>
-      <div class="proc-title-cell"><div class="proc-title">Plan &amp; Quote</div></div>
-      <div class="proc-body-cell"><p class="proc-body">Preliminary budget comparisons, location and studio feasibility, crew and equipment availability, tax and exchange modelling, and realistic timelines. All fast. All practical. No fluff.</p></div>
-    </div>
-    <div class="proc-item reveal rd2">
-      <div class="proc-num-cell"><span class="proc-num">03</span></div>
-      <div class="proc-title-cell"><div class="proc-title">Execute</div></div>
-      <div class="proc-body-cell"><p class="proc-body">We run the production on the ground. From first prep day to final wrap, every detail is managed — so you can focus on the work, and your clients experience something seamless and premium.</p></div>
-    </div>
-    <div class="proc-item reveal rd3">
-      <div class="proc-num-cell"><span class="proc-num">04</span></div>
-      <div class="proc-title-cell"><div class="proc-title">Wrap &amp; Build</div></div>
-      <div class="proc-body-cell"><p class="proc-body">Clean cost reporting, final reconciliation, tax filing, and a full wrap package. Our primary objective is a repeatable production workflow you can rely on for every future project in Canada.</p></div>
+  <div class="wrap">
+    <div class="s-wrap">
+      <div class="s-tag reveal">How We Work</div>
+      <div class="process-list">
+        <div class="proc-item reveal">
+          <div class="proc-num-cell"><span class="proc-num">01</span></div>
+          <div class="proc-title-cell"><div class="proc-title">Bring Us in Early</div></div>
+          <div class="proc-body-cell"><p class="proc-body">We prefer to win bids with you. Bring APS in at the bid phase and we'll pressure-test budgets, identify creative upgrades Canada enables, and help you confidently propose the switch to your agency or client.</p></div>
+        </div>
+        <div class="proc-item reveal rd1">
+          <div class="proc-num-cell"><span class="proc-num">02</span></div>
+          <div class="proc-title-cell"><div class="proc-title">Plan &amp; Quote</div></div>
+          <div class="proc-body-cell"><p class="proc-body">Preliminary budget comparisons, location and studio feasibility, crew and equipment availability, tax and exchange modelling, and realistic timelines. All fast. All practical. No fluff.</p></div>
+        </div>
+        <div class="proc-item reveal rd2">
+          <div class="proc-num-cell"><span class="proc-num">03</span></div>
+          <div class="proc-title-cell"><div class="proc-title">Execute</div></div>
+          <div class="proc-body-cell"><p class="proc-body">We run the production on the ground. From first prep day to final wrap, every detail is managed — so you can focus on the work, and your clients experience something seamless and premium.</p></div>
+        </div>
+        <div class="proc-item reveal rd3">
+          <div class="proc-num-cell"><span class="proc-num">04</span></div>
+          <div class="proc-title-cell"><div class="proc-title">Wrap &amp; Build</div></div>
+          <div class="proc-body-cell"><p class="proc-body">Clean cost reporting, final reconciliation, tax filing, and a full wrap package. Our primary objective is a repeatable production workflow you can rely on for every future project in Canada.</p></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- BID SUPPORT -->
 <section class="bid-section">
-  <div class="bid-inner">
-    <div class="bid-tag reveal">APS Bid Support</div>
-    <div class="bid-grid">
-      <div class="bid-left reveal rd1">
-        <h2 class="bid-headline">We'll Help You<br><span class="serif">Win the Job.</span></h2>
-        <p class="bid-sub">When you're bidding a project that might work better in Canada, APS acts as a strategic partner — not just a fixer. We help production companies make the case before the shoot is confirmed.</p>
-      </div>
-      <div class="bid-right reveal rd2">
-        <ul class="bid-list">
-          <li>Preliminary budget comparisons — US vs. Canada</li>
-          <li>Location and studio feasibility checks</li>
-          <li>Crew and equipment availability</li>
-          <li>High-level tax and exchange rate modelling</li>
-          <li>Realistic timelines and risk assessment</li>
-          <li>A stronger bid, clearer value story, smoother production</li>
-        </ul>
+  <div class="wrap">
+    <div class="s-wrap">
+      <div class="bid-tag reveal">APS Bid Support</div>
+      <div class="bid-grid">
+        <div class="bid-left reveal rd1">
+          <h2 class="bid-headline">We'll Help You<br><span class="serif">Win the Job.</span></h2>
+          <p class="bid-sub">When you're bidding a project that might work better in Canada, APS acts as a strategic partner — not just a fixer. We help production companies make the case before the shoot is confirmed.</p>
+        </div>
+        <div class="bid-right reveal rd2">
+          <ul class="bid-list">
+            <li>Preliminary budget comparisons — US vs. Canada</li>
+            <li>Location and studio feasibility checks</li>
+            <li>Crew and equipment availability</li>
+            <li>High-level tax and exchange rate modelling</li>
+            <li>Realistic timelines and risk assessment</li>
+            <li>A stronger bid, clearer value story, smoother production</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -1008,41 +1146,53 @@ footer.visible .f-tagline { opacity: 1; transform: translateY(0); }
 
 <!-- CTA -->
 <section class="cta-section" id="contact">
-  <div class="cta-inner">
-    <div class="reveal rd1">
-      <h2 class="cta-headline">Wherever You're At<br>in the Cycle,<br>We're <span class="serif">Ready.</span></h2>
+  <div class="wrap">
+    <div class="cta-inner">
+      <div class="reveal rd1">
+        <h2 class="cta-headline">Wherever You're At<br>in the Cycle,<br>We're <span class="serif">Ready.</span></h2>
+      </div>
+      <div class="cta-right reveal rd2">
+        <p class="cta-text">We'll handle the rush jobs, but we prefer to win bids with you. Get connected — tell us about your project and we'll take it from there.</p>
+        <button class="email-btn" onclick="copyEmail()">
+          <span id="emailText"></span>
+          <svg class="ico" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 12L12 2M12 2H5M12 2V9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="cta-bg" aria-hidden="true">APS</div>
     </div>
-    <div class="cta-right reveal rd2">
-      <p class="cta-text">We'll handle the rush jobs, but we prefer to win bids with you. Get connected — tell us about your project and we'll take it from there.</p>
-      <button class="email-btn" onclick="copyEmail()">
-        <span id="emailText"></span>
-        <span class="ico">&#8599;</span>
-      </button>
-    </div>
-    <div class="cta-bg" aria-hidden="true">APS</div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer id="siteFooter">
-  <div class="f-logo">APS<b>.</b></div>
-  <div class="f-mid">
-    <div class="f-copy">&copy; <span id="yr"></span> Analog Production Services</div>
-    <div class="f-tagline">Canadian Service Production, Built for International Ambition</div>
+  <div class="footer-inner">
+    <div class="f-logo">APS<b>.</b></div>
+    <div class="f-mid">
+      <div class="f-copy">&copy; <span id="yr"></span> Analog Production Services</div>
+      <div class="f-tagline">Canadian Service Production, Built for International Ambition</div>
+    </div>
+    <div class="f-loc">Toronto &bull; Vancouver &bull; Montreal</div>
   </div>
-  <div class="f-loc">Toronto &bull; Vancouver &bull; Montreal</div>
 </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
+  var isMobile = window.matchMedia('(max-width: 1060px)').matches;
+
   /* ── LOADER ─────────────────────────── */
   document.body.classList.add('loading');
   var loader = document.getElementById('loader');
   var bar    = document.getElementById('loaderBar');
-  var num    = document.getElementById('loaderNum');
+  var numEl  = document.getElementById('loaderNum');
   var count  = document.getElementById('loaderCount');
   var loaderDone = false;
+
+  // On mobile, hide the scramble tagline
+  if (isMobile) {
+    var tl = document.getElementById('loaderTagline');
+    if (tl) tl.style.display = 'none';
+  }
 
   (function run() {
     var phases = [{t:22,d:460},{t:48,d:520},{t:71,d:580},{t:88,d:520},{t:100,d:360}];
@@ -1056,7 +1206,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var e = p<0.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
         cur = Math.floor(sv + (ph.t-sv)*e);
         bar.style.width = cur+'%';
-        num.textContent = cur;
+        numEl.textContent = cur;
         count.textContent = cur+' / 100';
         if (p<1) requestAnimationFrame(tick);
         else { pi++; setTimeout(next, 55); }
@@ -1068,21 +1218,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function finishLoader() {
     if (loaderDone) return; loaderDone = true;
-    bar.style.width = '100%';
-    num.textContent = '100';
-    count.textContent = '100 / 100';
+    bar.style.width = '100%'; numEl.textContent = '100'; count.textContent = '100 / 100';
     setTimeout(function() {
       loader.classList.add('hide');
       document.body.classList.remove('loading');
-      // Trigger page-open animation after loader exits
       setTimeout(function() {
         document.body.classList.add('page-ready');
         loader.style.display = 'none';
-        // Start eyebrow scramble after hero is visible
-        setTimeout(function() {
-          var eyebrow = document.getElementById('heroEyebrow');
-          if (eyebrow) scramble(eyebrow, eyebrow.textContent.trim(), 1100);
-        }, 400);
+        // Eyebrow scramble — desktop only
+        if (!isMobile) {
+          setTimeout(function() {
+            var eyebrow = document.getElementById('heroEyebrow');
+            if (eyebrow) scramble(eyebrow, eyebrow.textContent.trim(), 1100);
+          }, 400);
+        }
       }, 200);
     }, 380);
   }
@@ -1094,7 +1243,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('emailText').textContent = _e;
   document.getElementById('overlayEmail').textContent = _e;
 
-  /* ── HAMBURGER MENU ─────────────────── */
+  /* ── HAMBURGER ──────────────────────── */
   var burger  = document.getElementById('burger');
   var overlay = document.getElementById('navOverlay');
   var navEl   = document.getElementById('nav');
@@ -1106,7 +1255,6 @@ document.addEventListener('DOMContentLoaded', function() {
     overlay.classList.toggle('open', menuOpen);
     document.body.style.overflow = menuOpen ? 'hidden' : '';
   });
-
   window.closeMenu = function() {
     menuOpen = false;
     navEl.classList.remove('menu-open');
@@ -1114,61 +1262,56 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.style.overflow = '';
   };
 
-  /* ── CURSOR ─────────────────────────── */
-  var curEl  = document.getElementById('cur');
-  var dotEl  = document.getElementById('curDot');
-  var rx = window.innerWidth/2, ry = window.innerHeight/2, mx = rx, my = ry;
-  document.addEventListener('mousemove', function(e) {
-    mx = e.clientX; my = e.clientY;
-    dotEl.style.left = mx+'px'; dotEl.style.top = my+'px';
-    dotEl.classList.add('show');
-  });
-  function lerp(a,b,t){ return a+(b-a)*t; }
-  (function loop() {
-    rx = lerp(rx,mx,0.1); ry = lerp(ry,my,0.1);
-    curEl.style.left = rx+'px'; curEl.style.top = ry+'px';
-    requestAnimationFrame(loop);
-  })();
-  document.querySelectorAll('a,button,.svc-card,.proc-item,.diff-card').forEach(function(el) {
-    el.addEventListener('mouseenter', function(){ curEl.classList.add('on'); });
-    el.addEventListener('mouseleave', function(){ curEl.classList.remove('on'); });
-  });
+  /* ── CURSOR (desktop only) ──────────── */
+  if (!isMobile) {
+    var curEl = document.getElementById('cur');
+    var dotEl = document.getElementById('curDot');
+    var rx = window.innerWidth/2, ry = window.innerHeight/2, mx = rx, my = ry;
+    document.addEventListener('mousemove', function(e) {
+      mx = e.clientX; my = e.clientY;
+      dotEl.style.left = mx+'px'; dotEl.style.top = my+'px';
+      dotEl.classList.add('show');
+    });
+    function lerp(a,b,t){ return a+(b-a)*t; }
+    (function loop() {
+      rx = lerp(rx,mx,0.1); ry = lerp(ry,my,0.1);
+      curEl.style.left = rx+'px'; curEl.style.top = ry+'px';
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a,button,.svc-card,.proc-item,.diff-card,.canada-card').forEach(function(el) {
+      el.addEventListener('mouseenter', function(){ curEl.classList.add('on'); });
+      el.addEventListener('mouseleave', function(){ curEl.classList.remove('on'); });
+    });
+  }
 
-  /* ── NAV SCROLL STATE ───────────────── */
+  /* ── NAV SCROLL ─────────────────────── */
   window.addEventListener('scroll', function() {
     navEl.classList.toggle('scrolled', window.scrollY > 40 && !menuOpen);
   });
 
-  /* ── SCROLL HINT DISAPPEAR ──────────── */
+  /* ── SCROLL HINT ────────────────────── */
   var scrollHint = document.getElementById('heroScroll');
   var scrollHidden = false;
   window.addEventListener('scroll', function() {
     if (!scrollHidden && window.scrollY > 60) {
-      scrollHidden = true;
-      scrollHint.classList.add('hidden');
+      scrollHidden = true; scrollHint.classList.add('hidden');
     } else if (scrollHidden && window.scrollY <= 60) {
-      scrollHidden = false;
-      scrollHint.classList.remove('hidden');
+      scrollHidden = false; scrollHint.classList.remove('hidden');
     }
   }, { passive: true });
 
-  /* ── MARQUEE SLOW NEAR SECTION HEADINGS ── */
+  /* ── MARQUEE SLOW ───────────────────── */
   var marqueeTrack = document.getElementById('marqueeTrack');
-  var sectionTags = document.querySelectorAll('.s-tag, .diff-tag, .bid-tag');
   var marqueeSlowed = false;
-
   var sectionObs = new IntersectionObserver(function(entries) {
     var anyVisible = false;
     entries.forEach(function(e) { if (e.isIntersecting) anyVisible = true; });
-    if (anyVisible && !marqueeSlowed) {
-      marqueeSlowed = true;
-      marqueeTrack.classList.add('slow');
-    } else if (!anyVisible && marqueeSlowed) {
-      marqueeSlowed = false;
-      marqueeTrack.classList.remove('slow');
+    if (anyVisible !== marqueeSlowed) {
+      marqueeSlowed = anyVisible;
+      marqueeTrack.classList.toggle('slow', anyVisible);
     }
   }, { threshold: 0.5 });
-  sectionTags.forEach(function(el) { sectionObs.observe(el); });
+  document.querySelectorAll('.s-tag, .diff-tag, .bid-tag').forEach(function(el) { sectionObs.observe(el); });
 
   /* ── SCROLL REVEAL ──────────────────── */
   var revObs = new IntersectionObserver(function(entries) {
@@ -1181,30 +1324,21 @@ document.addEventListener('DOMContentLoaded', function() {
   /* ── FOOTER REVEAL ──────────────────── */
   var footerEl = document.getElementById('siteFooter');
   var footObs = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting) {
-      footerEl.classList.add('visible');
-      footObs.unobserve(footerEl);
-    }
+    if (entries[0].isIntersecting) { footerEl.classList.add('visible'); footObs.unobserve(footerEl); }
   }, { threshold: 0.2 });
   footObs.observe(footerEl);
 
-  /* ── "SPECIALIST" LETTER ANIMATION ─── */
+  /* ── SPECIALIST ANIMATION ───────────── */
   var specWord = document.getElementById('specialistWord');
-  var specText = 'Specialist';
-  // Build letter spans
-  specText.split('').forEach(function(ch, i) {
+  'Specialist'.split('').forEach(function(ch, i) {
     var s = document.createElement('span');
-    s.className = 'sl';
-    s.textContent = ch;
-    s.style.transitionDelay = (0.04 * i) + 's';
+    s.className = 'sl'; s.textContent = ch;
+    s.style.transitionDelay = (0.038 * i) + 's';
     specWord.appendChild(s);
   });
-  // Trigger when the who-left cell becomes visible
   var specObs = new IntersectionObserver(function(entries) {
     if (entries[0].isIntersecting) {
-      setTimeout(function() {
-        specWord.classList.add('animated');
-      }, 200);
+      setTimeout(function() { specWord.classList.add('animated'); }, 200);
       specObs.unobserve(entries[0].target);
     }
   }, { threshold: 0.4 });
